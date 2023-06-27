@@ -1,35 +1,39 @@
 package com.collection;
 
-import exception.EmployeeAlreadyAddedException;
-import exception.EmployeeNotFoundException;
-import exception.EmployeeStorageIsFullException;
-
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
 public class EmployeeService {
-    private final Map<String, Employee> employees = new HashMap();
-    final static private int MAX_SIZE = 4;
+    private final Map<String, Employee> employees = new HashMap<>();
+    private static final int MAX_SIZE = 5;
 
-    public Employee add(String firstName, String lastName) {
+    public EmployeeService() {
+        Employee e1 = new Employee("Ivan", "Noname", 1, 111111);
+        Employee e2 = new Employee("Masha", "Noname1", 1, 511111);
+        Employee e3 = new Employee("Petya", "Noname2", 1, 211111);
+        employees.put(createKey(e1),e1);
+        employees.put(createKey(e2),e2);
+        employees.put(createKey(e3),e3);
+
+    }
+
+
+    public Employee add(String firstName, String lastName, int department, double salary) {
         if (employees.size() >= MAX_SIZE) {
-            throw new EmployeeStorageIsFullException();
+            throw new EmployeeNotFoundException();
         }
-        Employee employeeToAdd = new Employee(firstName, lastName);
+        Employee employeeToAdd = new Employee(firstName, lastName, department, salary);
         if (employees.containsKey(createKey(firstName, lastName))) {
-            throw new EmployeeAlreadyAddedException();
+            throw new EmployeeNotFoundException();
         }
         employees.put(createKey(firstName, lastName), employeeToAdd);
         return employeeToAdd;
     }
 
     public Employee remove(String firstName, String lastName) {
-        Employee employeeToRemove = new Employee(firstName, lastName);
         if (!employees.containsKey(createKey(firstName, lastName))) {
             throw new EmployeeNotFoundException();
         }
@@ -44,10 +48,14 @@ public class EmployeeService {
     }
 
     public List<Employee> getAll() {
-        return List.copyOf(employees.values());
+        return Collections.unmodifiableList(new ArrayList<>(employees.values()));
     }
 
-    private String createKey(String firstName, String lastName) {
-        return (firstName + lastName).toLowerCase();
+    private static String createKey(Employee employee) {
+        return createKey(employee.getFirstName(), employee.getLastName());
+    }
+
+    private static String createKey(String firstName, String lastName) {
+        return (firstName+lastName).toLowerCase();
     }
 }

@@ -1,4 +1,4 @@
-package exception;
+package com.collection;
 
 public class EmployeeNotFoundException extends RuntimeException {
     public EmployeeNotFoundException() {

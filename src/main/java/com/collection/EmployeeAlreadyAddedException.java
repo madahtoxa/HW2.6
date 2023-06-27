@@ -1,4 +1,4 @@
-package exception;
+package com.collection;
 
 
 public class EmployeeAlreadyAddedException extends RuntimeException {

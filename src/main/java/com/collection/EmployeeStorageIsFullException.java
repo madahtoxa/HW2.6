@@ -1,4 +1,4 @@
-package exception;
+package com.collection;
 
 public class EmployeeStorageIsFullException extends RuntimeException{
     public EmployeeStorageIsFullException() {
