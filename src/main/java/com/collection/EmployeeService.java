@@ -1,6 +1,7 @@
 package com.collection;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -22,6 +23,10 @@ public class EmployeeService {
 
 
     public Employee add(String firstName, String lastName, int department, double salary) {
+        if(!org.apache.commons.lang3.StringUtils.isAlpha(firstName)
+                ||!org.apache.commons.lang3.StringUtils.isAlpha(lastName)){
+            throw new InvalidDateException();
+        }
         if (employees.size() >= MAX_SIZE) {
             throw new EmployeeNotFoundException();
         }
@@ -29,7 +34,9 @@ public class EmployeeService {
         if (employees.containsKey(createKey(firstName, lastName))) {
             throw new EmployeeNotFoundException();
         }
+
         employees.put(createKey(firstName, lastName), employeeToAdd);
+        correctCase(employeeToAdd);
         return employeeToAdd;
     }
 
@@ -57,5 +64,12 @@ public class EmployeeService {
 
     private static String createKey(String firstName, String lastName) {
         return (firstName+lastName).toLowerCase();
+    }
+
+    private static void correctCase (Employee employee){
+        String correctedFirstName = StringUtils.capitalize(employee.getFirstName().toLowerCase());
+        employee.setFirstName(correctedFirstName);
+        String correctedLastName = StringUtils.capitalize(employee.getLastName().toLowerCase());
+        employee.setLastName(correctedLastName);
     }
 }
